@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản Trị Hệ Thống - Dashboard</title>
+
+    <link rel="icon" href="/uploads/mini_logo.ico" type="image/png">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Custom styles */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .sidebar {
+            background-color: var(--primary-color);
+            min-height: 100vh;
+            color: white;
+            /* padding-top: 20px; */
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .container-fluid,
+        .row {
+            position: relative;
+        }
+
+        .main-content {
+            margin-left: 16.666667%;
+            /* Tránh bị đè bởi sidebar cố định */
+            padding: 20px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+
+        .card-stats {
+            transition: all 0.3s;
+        }
+
+        .card-stats:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .chart-container {
+            height: 300px;
+        }
+
+        .recent-activity-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .recent-activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .mini-container {
+            border-radius: 20px;
+            box-shadow: 0px 5px 0px #b3b3b3;
+            margin: 20px 50px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 15px;
+        }
+
+        .mini-container:hover {
+            border-radius: 20px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            background-color: #2e2f2f;
+            /* Màu xanh đẹp khi hover */
+            transform: translateY(-5px);
+            /* Đẩy lên một chút để tạo hiệu ứng nâng lên */
+        }
+
+        .mini-container .content {
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+
+
+        /* Thêm hiệu ứng khi di chuột vào hình ảnh hoặc icon */
+        .mini-container img,
+        .mini-container i {
+            transition: transform 0.3s ease;
+        }
+
+        .mini-container:hover img,
+        .mini-container:hover i {
+            transform: scale(1.1);
+            /* Tăng kích thước hình ảnh hoặc icon khi hover */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <%- include('partials/header') %>
+
+                <!-- Main Content -->
+                <div class="col-md-10 col-lg-10 ms-auto main-content">
+                    <!-- Header -->
+                    <!-- Header -->
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-md-6">
+                            <h3>Dashboard</h3>
+                            <p class="text-muted">Xin chào Admin, chào mừng trở lại!</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-end align-items-center">
+                                <!-- Date Filter -->
+                                <div class="me-3">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-calendar me-1"></i> Hôm nay
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="#" data-filter="day">Hôm nay</a></li>
+                                            <li><a class="dropdown-item" href="#" data-filter="week">Tuần này</a></li>
+                                            <li><a class="dropdown-item" href="#" data-filter="month">Tháng này</a></li>
+                                            <li><a class="dropdown-item" href="#" data-filter="year">Năm nay</a></li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+
+                                <!-- User Profile Dropdown -->
+                                <div class="dropdown">
+                                    <button class="user-dropdown border-0 d-flex align-items-center" type="button"
+                                        id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img id="user-avatar" src="https://via.placeholder.com/40?text=U" alt="Avatar"
+                                            class="rounded-circle me-2" width="36" height="36"
+                                            style="object-fit: cover;">
+                                        <span class="d-none d-md-inline" id="user-fullname">Admin</span>
+                                        <i class="fas fa-chevron-down ms-2 small"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="profile"><i class="fas fa-user me-2"></i> Hồ
+                                                sơ</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="settings"><i class="fas fa-cog me-2"></i> Cài
+                                                đặt</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="#" onclick="logout()"><i
+                                                    class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card card-stats bg-primary text-white mb-4">
+                                <div class="card-body text-center">
+                                    <div class="card-icon">
+                                        <i class="fas fa-shopping-bag"></i>
+                                    </div>
+                                    <h5 class="card-title">Tổng đơn hàng</h5>
+                                    <h3>loading...</h3>
+                                    <p class="mb-0"><i class="fas fa-arrow-up"></i> 12% so với tháng trước</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card card-stats bg-success text-white mb-4">
+                                <div class="card-body text-center">
+                                    <div class="card-icon">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <h5 class="card-title">Doanh thu</h5>
+                                    <h3>loading...</h3>
+                                    <p class="mb-0"><i class="fas fa-arrow-up"></i> 8% so với tháng trước</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card card-stats bg-info text-white mb-4">
+                                <div class="card-body text-center">
+                                    <div class="card-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <h5 class="card-title">Khách hàng mới</h5>
+                                    <h3>loading...</h3>
+                                    <p class="mb-0"><i class="fas fa-arrow-up"></i> 5% so với tháng trước</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card card-stats bg-warning text-white mb-4">
+                                <div class="card-body text-center">
+                                    <div class="card-icon">
+                                        <i class="fas fa-box-open"></i>
+                                    </div>
+                                    <h5 class="card-title">Sản phẩm</h5>
+                                    <h3>loading...</h3>
+                                    <p class="mb-0"><i class="fas fa-arrow-up"></i> 3% so với tháng trước</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0" id="basicRevenueTitle">Doanh thu theo tháng</h5>
+
+                                    <div class="btn-group" id="filter-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            data-type="day">Ngày</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary active"
+                                            data-type="month">Tháng</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            data-type="year">Năm</button>
+                                    </div>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <!-- Chart canvas would go here, using a placeholder -->
+                                        <div class="d-flex justify-content-center align-items-center h-100 bg-light">
+                                            <canvas id="revenueChart" class="w-100 h-100"></canvas>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Phân bổ danh mục</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <!-- Pie chart canvas would go here, using a placeholder -->
+                                        <div class="d-flex justify-content-center align-items-center h-100 bg-light">
+                                            <canvas id="categoryChart" class="w-100 h-100"></canvas>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities and Top Products -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Hoạt động gần đây</h5>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#logModal">
+                                        Xem tất cả
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="recent-activity-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="bg-success text-white rounded-circle p-2"
+                                                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Đơn hàng mới #43215</h6>
+                                                <p class="text-muted mb-0">Nguyễn Văn A - 2.500.000đ</p>
+                                                <small class="text-muted">5 phút trước</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="recent-activity-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="bg-warning text-white rounded-circle p-2"
+                                                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-box"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Sản phẩm mới đã được thêm</h6>
+                                                <p class="text-muted mb-0">iPhone 15 Pro Max - 30.990.000đ</p>
+                                                <small class="text-muted">15 phút trước</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="recent-activity-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="bg-info text-white rounded-circle p-2"
+                                                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Khách hàng mới đã đăng ký</h6>
+                                                <p class="text-muted mb-0">Trần Thị B</p>
+                                                <small class="text-muted">30 phút trước</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="recent-activity-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="bg-danger text-white rounded-circle p-2"
+                                                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Cảnh báo kho hàng</h6>
+                                                <p class="text-muted mb-0">Samsung Galaxy S23 sắp hết hàng</p>
+                                                <small class="text-muted">1 giờ trước</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Sản phẩm bán chạy</h5>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#topSellingModal">
+                                        Xem tất cả
+                                    </button>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sản phẩm</th>
+                                                    <th>Đã bán</th>
+                                                    <th>Tồn kho</th>
+                                                    <th>Doanh thu</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="top-selling-body">
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted">Đang tải dữ liệu...
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal: Xem tất cả hoạt động gần đây -->
+                    <div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="logModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="logModalLabel">Tất cả hoạt động gần đây</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <select id="logActionFilter" class="form-select form-select-sm">
+                                            <option value="">Tất cả hành động</option>
+                                            <option value="create">Tạo mới</option>
+                                            <option value="update">Cập nhật</option>
+                                            <option value="delete">Xóa</option>
+                                            <option value="status_change">Thay đổi trạng thái</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <select id="logDateRange" class="form-select form-select-sm">
+                                            <option value="">Tất cả thời gian</option>
+                                            <option value="today">Hôm nay</option>
+                                            <option value="week">Tuần này</option>
+                                            <option value="month">Tháng này</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="modal-body" id="logModalBody">
+                                    <p class="text-center text-muted">Đang tải dữ liệu...</p>
+                                </div>
+
+                                <nav>
+                                    <ul class="pagination justify-content-center" id="logPaginationContainer"></ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal fade" id="topSellingModal" tabindex="-1" aria-labelledby="topSellingModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="topSellingModalLabel">Top sản phẩm bán chạy</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <!-- Bộ lọc -->
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <div>
+                                            <select class="form-select form-select-sm" id="filter-month"
+                                                style="width: auto;">
+                                                <% for(let i=1; i <=12; i++) { %>
+                                                    <option value="<%= i %>">Tháng <%= i %>
+                                                    </option>
+                                                    <% } %>
+                                            </select>
+                                        </div>
+
+                                        <div class="input-group input-group-sm" style="max-width: 300px;">
+                                            <input id="searchInput" type="text" class="form-control"
+                                                placeholder="Tìm sản phẩm...">
+                                            <button class="btn btn-outline-secondary" id="btnSearch"><i
+                                                    class="fas fa-search"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bảng -->
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sản phẩm</th>
+                                                    <th>Đã bán</th>
+                                                    <th>Tồn kho</th>
+                                                    <th>Doanh thu</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="top-selling-modal-body">
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted">Đang tải...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Phân trang -->
+                                    <nav class="mt-3">
+                                        <ul class="pagination justify-content-end" id="pagination-container"></ul>
+                                    </nav>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Recent Orders -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Đơn hàng gần đây</h5>
+                                    <a href="bills/" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="recent-orders-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Khách hàng</th>
+                                                    <th>Ngày</th>
+                                                    <th>Tổng tiền</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Thanh toán</th>
+                                                    <th>Hành động</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recent-orders-body">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <%- include('partials/footer') %>
+                </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            const actionIconMap = {
+                create: 'fas fa-plus-circle bg-success',
+                update: 'fas fa-edit bg-warning',
+                delete: 'fas fa-trash bg-danger',
+                status_change: 'fas fa-toggle-on bg-info'
+            };
+
+            const getActionIcon = (action = '') => actionIconMap[action] || 'fas fa-history bg-secondary';
+
+            const actionLabelMap = {
+                create: "Đã tạo mới",
+                update: "Đã cập nhật",
+                delete: "Đã xóa",
+                status_change: "Thay đổi trạng thái"
+            };
+
+            const targetLabelMap = {
+                Product: "sản phẩm",
+                Bill: "đơn hàng",
+                User: "người dùng",
+                Category: "danh mục"
+            };
+
+            const getActionLabel = (action) => actionLabelMap[action] || action;
+            const getTargetLabel = (target) => targetLabelMap[target] || target;
+            const accessToken = localStorage.getItem('accessToken');
+            const userId = localStorage.getItem('userId');
+            const apiKey = 'c244dcd1532c91ab98a1c028e4f24f81457cdb2ac83e2ca422d36046fec84233589a4b51eda05e24d8871f73653708e3b13cf6dd1415a6330eaf6707217ef683'
+            async function logout() {
+                try {
+                    const refreshToken = localStorage.getItem("refreshToken"); 
+                    console.log("refreshToken", refreshToken);
+
+
+                    const response = await fetch("/v1/api/access/logout", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ refreshToken }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        console.log("✅ Logout thành công:", data.message);
+
+                        localStorage.removeItem("accessToken");
+                        localStorage.removeItem("refreshToken");
+                        sessionStorage.clear();
+
+                        // Chuyển hướng về trang đăng nhập
+                        window.location.href = "/";
+                    } else {
+                        console.error("❌ Lỗi khi logout:", data.message);
+                    }
+                } catch (error) {
+                    console.error("❌ Lỗi logout trên client:", error);
+                }
+            }
+
+            async function refreshAccessToken() {
+                const refreshToken = localStorage.getItem("refreshToken");
+
+                if (!refreshToken) {
+                    console.error("❌ Không có refreshToken, yêu cầu đăng nhập lại!");
+                    window.location.href = "/login";
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/refresh-token", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ refreshToken }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        console.log("✅ Refresh token thành công:", data.accessToken);
+                        localStorage.setItem("accessToken", data.accessToken);
+                    } else {
+                        console.error("❌ Refresh token thất bại:", data.message);
+                        localStorage.removeItem("accessToken");
+                        localStorage.removeItem("refreshToken");
+                        window.location.href = "/login";
+                    }
+                } catch (error) {
+                    console.error("❌ Lỗi refresh token:", error);
+                }
+            }
+
+
+            // async function loadRevenue() {
+            //     try {
+            //         const now = new Date();
+            //         const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString(); // đầu tháng
+            //         const endDate = new Date().toISOString(); // hôm nay
+
+            //         const res = await fetch(`/v1/api/bill/revenue?startDate=${startDate}&endDate=${endDate}`, {
+            //             headers: {
+            //                 authorization: accessToken,
+            //                 'x-client-id': userId,
+            //                 'x-api-key': apiKey
+            //             }
+            //         });
+            //         const data = await res.json();
+
+            //         console.log("check revenue", data);
+
+            //         const revenue = Math.floor(data.totalRevenue) || 0;
+            //         document.querySelector(".card-stats.bg-success h3").innerText = revenue.toLocaleString('vi-VN', {
+            //             maximumFractionDigits: 0
+            //         }) + ' ₫';
+
+            //     } catch (error) {
+            //         console.error("Lỗi khi load doanh thu:", error);
+            //     }
+            // }
+
+
+
+            // async function loadTotalOrders() {
+            //     try {
+            //         const res = await fetch('/v1/api/bill', {
+            //             headers: {
+            //                 authorization: accessToken,
+            //                 'x-client-id': userId,
+            //                 'x-api-key': apiKey
+            //             }
+            //         });
+            //         const data = await res.json();
+            //         console.log('check order', data);
+
+            //         document.querySelector(".card-stats.bg-primary h3").innerText = data.metadata.length.toLocaleString('vi-VN');
+
+            //     } catch (error) {
+            //         console.error("Lỗi khi load đơn hàng:", error);
+            //     }
+            // }
+
+
+
+
+
+            async function loadRecentOrders() {
+                try {
+                    const res = await fetch('/v1/api/bill', {
+                        headers: {
+                            authorization: accessToken,
+                            'x-client-id': userId,
+                            'x-api-key': apiKey
+                        }
+                    });
+                    const data = await res.json();
+
+                    const bills = data.metadata || [];
+
+                    console.log("Kiểu dữ liệu bills:", typeof bills);
+                    console.log("Giá trị bills:", bills);
+
+
+                    const recent = bills
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .slice(0, 5);
+
+                    console.log("check recent", recent);
+
+
+                    const tableBody = document.getElementById("recent-orders-body");
+
+                    tableBody.innerHTML = recent.map(bill => `
+      <tr>
+        <td>#${bill._id}</td>
+        <td>${bill.receiver_name || "Không rõ"}</td>
+        <td>${new Date(bill.createdAt).toLocaleDateString()}</td>
+        <td>${bill.total?.toLocaleString()}đ</td>
+        <td><span class="badge bg-warning">${bill.status}</span></td>
+        <td><span class="badge bg-success">${bill.payment_method?.toUpperCase()}</span></td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-outline-primary" onclick="viewOrderDetail('${bill._id}')">
+                 <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+                } catch (error) {
+                    console.error("Lỗi khi load đơn hàng:", error);
+                }
+            }
+
+
+  
+            async function loadRecentActivities() {
+                const activityContainer = document.querySelector('.card-body .recent-activity-item')?.parentNode;
+                if (!activityContainer) {
+                    console.warn('Activity container not found in DOM');
+                    return;
+                }
+
+                try {
+                    const res = await fetch('/v1/api/log/recent', {
+                        headers: {
+                            authorization: accessToken,
+                            "x-client-id": userId,
+                            "x-api-key": apiKey
+                        }
+                    });
+
+                    // Check if the response is OK
+                    if (!res.ok) {
+                        throw new Error(`API request failed with status: ${res.status}`);
+                    }
+
+                    const { logs } = await res.json();
+
+                    // Handle empty logs scenario
+                    if (!logs || logs.length === 0) {
+                        activityContainer.innerHTML = `
+        <div class="text-muted text-center py-3">
+          <i class="fas fa-info-circle me-2"></i>Không có hoạt động nào.
+        </div>`;
+                        return;
+                    }
+
+                    // Render activity logs with enhanced UI
+                    activityContainer.innerHTML = logs.map(log => {
+                        const timestamp = new Date(log.changed_at).toLocaleString('vi-VN');
+                        const userName = log.changed_by?.full_name || 'Không xác định';
+                        const iconClass = getActionIcon(log.action);
+
+                        return `
+    <div class="recent-activity-item mb-3">
+      <div class="d-flex align-items-center">
+        <div class="flex-shrink-0">
+          <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+               style="width: 42px; height: 42px;">
+            <i class="${iconClass} p-2 rounded-circle text-white"
+               style="width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;"></i>
+          </div>
+        </div>
+        <div class="flex-grow-1 ms-3">
+          <h6 class="mb-1 fw-bold">${getActionLabel(log.action)} ${getTargetLabel(log.target_type)}</h6>
+
+          <p class="text-muted mb-1">${log.note || 'Không có ghi chú'}</p>
+          <small class="text-muted d-flex align-items-center">
+            <i class="fas fa-user me-1"></i> ${userName} 
+            <span class="mx-2">•</span>
+            <i class="fas fa-clock me-1"></i> ${timestamp}
+          </small>
+        </div>
+      </div>
+    </div>
+  `;
+                    }).join("");
+
+
+                } catch (err) {
+                    console.error("Lỗi khi load hoạt động gần đây:", err);
+                    activityContainer.innerHTML = `
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.
+      </div>`;
+                }
+            }
+
+
+            document.addEventListener("DOMContentLoaded", async function () {
+                const accessToken = localStorage.getItem("accessToken");
+                // await loadRevenue();
+                // await loadTotalOrders();
+                await loadRecentActivities();
+                const fullName = localStorage.getItem("full_name");
+                console.log("check full name", fullName);
+
+                function getInitials(name) {
+                    const parts = name.trim().split(" ");
+                    if (parts.length >= 2) {
+                        return parts[0][0].toUpperCase() + parts[parts.length - 1][0].toUpperCase();
+                    }
+                    return name[0]?.toUpperCase() || "";
+                }
+
+                const avatarEl = document.getElementById("user-initials");
+                if (avatarEl) {
+                    avatarEl.innerText = getInitials(fullName);
+                }
+
+
+                if (!accessToken) {
+                    console.log("❌ Không tìm thấy accessToken, chuyển hướng về trang đăng nhập!");
+                    window.location.href = "/";
+                    return;
+                }
+
+                // Kiểm tra accessToken còn hạn hay không
+                const isExpired = checkTokenExpiration(accessToken);
+                if (isExpired) {
+                    console.log("⚠ AccessToken đã hết hạn, đang làm mới...");
+                    await refreshAccessToken(); // Gọi hàm làm mới token
+                }
+                await loadDashboardReport('month');
+                await loadChartData(); // ✅ Thêm dòng này
+                await loadTopSellingProducts();
+                // await loadRecentOrders();
+
+            });
+
+            // Hàm kiểm tra `accessToken` có hết hạn không
+            function checkTokenExpiration(token) {
+                console.log("accessToken:", token);
+
+                const payload = JSON.parse(atob(token.split('.')[1])); // Giải mã payload của JWT
+                console.log("Thời gian hết hạn của accessToken:", new Date(payload.exp * 1000).toLocaleString());
+
+                return payload.exp * 1000 < Date.now(); // So sánh với thời gian hiện tại
+            }
+
+
+            async function loadTopSellingProducts() {
+                try {
+                    const res = await fetch("/v1/api/shop/products/top-selling", {
+                        headers: {
+                            authorization: accessToken,
+                            'x-client-id': userId,
+                            'x-api-key': apiKey
+                        }
+                    });
+                    const data = await res.json();
+                    console.log("check top selling", data);
+
+
+                    if (!data || !data.length) {
+                        document.getElementById("top-selling-body").innerHTML = `
+          <tr><td colspan="4" class="text-center text-muted">Không có dữ liệu</td></tr>
+        `;
+                        return;
+                    }
+
+                    const rowsHtml = data.map(p => `
+        <tr>
+          <td>${p.product_name}</td>
+          <td>${p.totalSold}</td>
+          <td>${p.product_stock}</td>
+         <td>${(p.totalSold * p.product_price).toLocaleString('vi-VN')} ₫</td>
+
+        </tr>
+      `).join("");
+
+                    document.getElementById("top-selling-body").innerHTML = rowsHtml;
+                } catch (error) {
+                    console.error("Lỗi khi tải sản phẩm bán chạy:", error);
+                    document.getElementById("top-selling-body").innerHTML = `
+        <tr><td colspan="4" class="text-danger text-center">Lỗi khi tải dữ liệu</td></tr>
+      `;
+                }
+            }
+
+            const ctx = document.getElementById("revenueChart").getContext("2d");
+
+            const revenueChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: [
+                        "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4",
+                        "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8",
+                        "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
+                    ],
+                    datasets: [{
+                        label: "Doanh thu (triệu VND)",
+                        data: [35, 40, 28, 55, 45, 60, 72, 65, 80, 90, 95, 110],
+                        fill: true,
+                        backgroundColor: "rgba(52, 152, 219, 0.2)",
+                        borderColor: "#3498db",
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + "M";
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            const ctx2 = document.getElementById("categoryChart").getContext("2d");
+
+            const categoryChart = new Chart(ctx2, {
+                type: "pie",
+                data: {
+                    labels: ["Điện thoại", "Laptop", "Phụ kiện", "Máy tính bảng", "Khác"],
+                    datasets: [{
+                        label: "Tỉ lệ sản phẩm",
+                        data: [40, 25, 15, 10, 10],
+                        backgroundColor: [
+                            "#3498db", // Điện thoại
+                            "#2ecc71", // Laptop
+                            "#f39c12", // Phụ kiện
+                            "#9b59b6", // Máy tính bảng
+                            "#e74c3c"  // Khác
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: "#333"
+                            }
+                        }
+                    }
+                }
+            });
+
+            function viewOrderDetail(orderId) {
+                window.location.href = `/v1/api/admin/bills/${orderId}`;
+            }
+
+            document.getElementById("filter-group").addEventListener("click", async function (e) {
+                if (e.target.matches("button[data-type]")) {
+                    document.querySelectorAll("#filter-group button").forEach(btn => btn.classList.remove("active"));
+                    e.target.classList.add("active");
+
+                    const type = e.target.dataset.type; // 'day', 'month', 'year'
+
+                    // Cập nhật tiêu đề động
+                    const titleMap = {
+                        day: "Doanh thu theo ngày",
+                        month: "Doanh thu theo tháng",
+                        year: "Doanh thu theo năm"
+                    };
+                    document.getElementById("basicRevenueTitle").textContent = titleMap[type] || "Doanh thu";
+
+                    // Gọi lại API để update chart
+                    await loadChartData(type);
+                }
+            });
+
+
+
+            async function loadDashboardReport(filter = 'month') {
+                try {
+                    const res = await fetch(`/v1/api/admin/reports/data?filter=${filter}`, {
+                        headers: {
+                            authorization: accessToken,
+                            "x-client-id": userId,
+                            "x-api-key": apiKey
+                        }
+                    });
+
+                    const { report } = await res.json();
+                    console.log("check report", report);
+
+                    if (!report) throw new Error("Không có dữ liệu");
+
+                    // Gán dữ liệu thống kê
+                    document.querySelector(".card-stats.bg-primary h3").innerText =
+                        report.totalOrders.toLocaleString("vi-VN");
+
+                    document.querySelector(".card-stats.bg-success h3").innerText =
+                        Math.floor(report.totalRevenue).toLocaleString("vi-VN", { maximumFractionDigits: 0 }) + " ₫";
+
+                    document.querySelector(".card-stats.bg-info h3").innerText =
+                        report.totalUsers.toLocaleString("vi-VN");
+
+                    document.querySelector(".card-stats.bg-warning h3").innerText =
+                        report.totalProducts.toLocaleString("vi-VN");
+
+                    // Top sản phẩm
+                    updateCategoryChart(report.categoryDistribution);
+
+                    // Đơn hàng gần đây
+                    document.getElementById("recent-orders-body").innerHTML = report.recentOrders.map(bill => `
+            <tr>
+                <td>#${bill._id}</td>
+                <td>${bill.receiver_name || "Không rõ"}</td>
+                <td>${new Date(bill.createdAt).toLocaleDateString()}</td>
+                <td>${bill.total.toLocaleString()}₫</td>
+                <td><span class="badge bg-warning">${bill.status}</span></td>
+                <td><span class="badge bg-success">${bill.payment_method?.toUpperCase()}</span></td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewOrderDetail('${bill._id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join("");
+
+                } catch (error) {
+                    console.error("❌ Lỗi khi tải dashboard:", error);
+                }
+            }
+
+
+            async function loadChartData(type = 'month') {
+                try {
+                    const res = await fetch(`/v1/api/admin/reports/overview-chart-data?filter=${type}`, {
+                        headers: {
+                            authorization: accessToken,
+                            "x-client-id": userId,
+                            "x-api-key": apiKey
+                        }
+                    });
+
+                    const { success, data } = await res.json();
+                    if (!success || !data) throw new Error("Dữ liệu không hợp lệ");
+                    console.log("check chart data", data);
+
+
+                    revenueChart.data.labels = data.data.labels;
+                    revenueChart.data.datasets[0].data = data.data.revenueData.map(val => Math.floor(val / 1000000));
+                    revenueChart.update();
+                } catch (error) {
+                    console.error("❌ Lỗi khi tải dữ liệu biểu đồ:", error);
+                }
+            }
+
+            document.querySelectorAll('.dropdown-menu a[data-filter]').forEach(item => {
+                item.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    const filterType = this.getAttribute('data-filter'); // day / week / month / year
+                    document.querySelector('.dropdown-toggle').innerHTML = `<i class="fas fa-calendar me-1"></i> ${this.textContent}`;
+
+                    await loadDashboardReport(filterType); // Gọi API theo filter
+                });
+            });
+
+            function updateCategoryChart(categoryData = []) {
+
+                const labels = categoryData.map(item => item.categoryName || "Không rõ");
+                const values = categoryData.map(item => item.count);
+
+                categoryChart.data.labels = labels;
+                categoryChart.data.datasets[0].data = values;
+                categoryChart.update();
+            }
+
+            const name = JSON.parse(localStorage.getItem("account")) || "Người dùng";
+            console.log("Name:", name);
+            const avatar = localStorage.getItem("avatar") || "https://via.placeholder.com/40?text=U";
+
+
+
+            const nameEl = document.getElementById("user-fullname");
+            const avatarEl = document.getElementById("user-avatar");
+
+            if (nameEl) nameEl.textContent = name.full_name;
+            if (avatarEl) avatarEl.src = name.avatar
+
+
+            let currentPage = 1;
+            let selectedMonth = new Date().getMonth() + 1;
+            let searchKeyword = "";
+
+            async function fetchTopSellingModal(page = 1) {
+                const month = document.getElementById("filter-month").value;
+                const search = document.getElementById("searchInput").value;
+                console.log("check month", month);
+
+
+                try {
+                    const res = await fetch(`/v1/api/shop/products/top-selling-list?month=${month}&page=${page}&limit=5&search=${search}`);
+                    const data = await res.json();
+
+                    console.log("check top selling modal", data);
+
+
+                    if (!data.products || data.products.length === 0) {
+                        document.getElementById("top-selling-modal-body").innerHTML = `<tr><td colspan="4" class="text-center text-muted">Không có dữ liệu</td></tr>`;
+                        return;
+                    }
+
+                    const rows = data.products.map(p => `
+            <tr>
+                <td>${p.product_name}</td>
+                <td>${p.totalSold}</td>
+                <td>${p.product_stock}</td>
+                <td>${(p.totalSold * p.product_price).toLocaleString('vi-VN')} ₫</td>
+            </tr>
+        `).join("");
+
+                    document.getElementById("top-selling-modal-body").innerHTML = rows;
+
+                    // Pagination
+                    let paginationHTML = "";
+                    for (let i = 1; i <= data.totalPages; i++) {
+                        paginationHTML += `<li class="page-item ${i === page ? "active" : ""}">
+                <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+            </li>`;
+                    }
+                    document.getElementById("pagination-container").innerHTML = paginationHTML;
+
+                } catch (err) {
+                    console.error("Lỗi khi fetch top-selling modal:", err);
+                }
+            }
+
+            function changePage(page) {
+                currentPage = page;
+                fetchTopSellingModal(page);
+            }
+
+            document.getElementById("filter-month").addEventListener("change", () => {
+                currentPage = 1;
+                fetchTopSellingModal();
+            });
+            document.getElementById("btnSearch").addEventListener("click", () => {
+                currentPage = 1;
+                fetchTopSellingModal();
+            });
+
+            // Khi mở modal
+            document.getElementById("topSellingModal").addEventListener("show.bs.modal", () => {
+                fetchTopSellingModal();
+            });
+
+
+            document.getElementById("logModal").addEventListener("show.bs.modal", () => {
+                loadAllLogs();
+            });
+
+            let logCurrentPage = 1;
+
+            function renderPagination(page, totalPages, callbackName = "loadAllLogs") {
+                let paginationHTML = "";
+                const maxPagesToShow = 5;
+                const half = Math.floor(maxPagesToShow / 2);
+
+                let start = Math.max(1, page - half);
+                let end = Math.min(totalPages, page + half);
+
+                // Điều chỉnh nếu gần đầu/cuối
+                if (page <= half) end = Math.min(totalPages, maxPagesToShow);
+                if (page + half >= totalPages) start = Math.max(1, totalPages - maxPagesToShow + 1);
+
+                // Nút <<
+                if (page > 1) {
+                    paginationHTML += `<li class="page-item">
+            <a class="page-link" href="#" onclick="${callbackName}(1)">«</a>
+        </li>`;
+                    paginationHTML += `<li class="page-item">
+            <a class="page-link" href="#" onclick="${callbackName}(${page - 1})">‹</a>
+        </li>`;
+                }
+
+                // Nút số trang
+                for (let i = start; i <= end; i++) {
+                    paginationHTML += `<li class="page-item ${i === page ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="${callbackName}(${i})">${i}</a>
+        </li>`;
+                }
+
+                // Nút >>
+                if (page < totalPages) {
+                    paginationHTML += `<li class="page-item">
+            <a class="page-link" href="#" onclick="${callbackName}(${page + 1})">›</a>
+        </li>`;
+                    paginationHTML += `<li class="page-item">
+            <a class="page-link" href="#" onclick="${callbackName}(${totalPages})">»</a>
+        </li>`;
+                }
+
+                return paginationHTML;
+            }
+
+
+            async function loadAllLogs(page = 1) {
+                const container = document.getElementById("logModalBody");
+                const pagination = document.getElementById("logPaginationContainer");
+
+                const action = document.getElementById("logActionFilter").value;
+                const range = document.getElementById("logDateRange").value;
+                const limit = 10;
+
+                container.innerHTML = `<p class="text-center text-muted">Đang tải...</p>`;
+                pagination.innerHTML = '';
+
+                try {
+                    const params = new URLSearchParams({ page, limit });
+                    if (action) params.append('action', action);
+                    if (range) params.append('range', range);
+
+                    const res = await fetch(`/v1/api/log/all?${params.toString()}`, {
+                        headers: {
+                            authorization: accessToken,
+                            'x-client-id': userId,
+                            'x-api-key': apiKey
+                        }
+                    });
+
+                    const { logs, totalPages } = await res.json();
+                    if (!logs || logs.length === 0) {
+                        container.innerHTML = `<p class="text-center text-muted">Không có hoạt động nào.</p>`;
+                        return;
+                    }
+
+                    logCurrentPage = page;
+
+                    container.innerHTML = logs.map(log => {
+                        const timestamp = new Date(log.changed_at).toLocaleString('vi-VN');
+                        const user = log.changed_by?.full_name || 'Không xác định';
+                        const iconClass = getActionIcon(log.action);
+                        const actionText = getActionLabel(log.action);
+                        const targetText = getTargetLabel(log.target_type);
+
+                        return `
+        <div class="recent-activity-item border-bottom pb-2 mb-2">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+              <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                style="width: 42px; height: 42px;">
+                <i class="${iconClass} p-2 rounded-circle text-white"
+                  style="width: 42px; height: 42px;"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h6 class="mb-1 fw-bold">${actionText} ${targetText}</h6>
+              <p class="text-muted mb-1">${log.note || "Không có ghi chú"}</p>
+              <small class="text-muted">
+                <i class="fas fa-user me-1"></i> ${user}
+                <span class="mx-2">•</span>
+                <i class="fas fa-clock me-1"></i> ${timestamp}
+              </small>
+            </div>
+          </div>
+        </div>`;
+                    }).join('');
+
+                    // Render phân trang
+                    pagination.innerHTML = renderPagination(page, totalPages, 'loadAllLogs');
+
+
+                } catch (err) {
+                    container.innerHTML = `<p class="text-danger text-center">❌ Lỗi khi tải dữ liệu</p>`;
+                    console.error("❌ Lỗi load logs:", err);
+                }
+            }
+
+            // Gọi lại khi lọc thay đổi
+            document.getElementById("logActionFilter").addEventListener("change", () => loadAllLogs(1));
+            document.getElementById("logDateRange").addEventListener("change", () => loadAllLogs(1));
+
+        </script>
+</body>
+
+</html>

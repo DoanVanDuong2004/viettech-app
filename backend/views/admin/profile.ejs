@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Cá Nhân</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #28a745;
+            --primary-dark: #218838;
+            --light-bg: #f8f9fa;
+            --border-radius: 10px;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .profile-container {
+            max-width: 900px;
+            margin: 40px auto;
+        }
+        
+        .profile-card {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 20px;
+            color: white;
+        }
+        
+        .avatar-container {
+            position: relative;
+            margin-bottom: -50px;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-details {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 70px 30px 30px;
+            margin-top: -20px;
+        }
+        
+        .info-section {
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .badge-custom {
+            padding: 8px 12px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+        
+        .btn-edit {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 30px;
+            padding: 10px 25px;
+            border: none;
+            transition: all 0.3s;
+        }
+        
+        .btn-edit:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="m-0"><i class="fas fa-user-circle me-2"></i>Hồ Sơ Cá Nhân</h3>
+                
+                </div>
+            </div>
+            
+            <div class="text-center avatar-container">
+                <img class="profile-avatar" src="<%= user.profile_image?.url || '/uploads/default-avatar.png' %>" alt="Avatar" />
+
+            </div>
+            
+            <div class="user-details">
+                <div class="text-center mb-4">
+                    <h4 id="full-name-profile"><%= user.full_name %></h4>
+                    <p class="text-muted">
+                        <i class="fas fa-envelope me-2"></i><%= user.email %>
+                    </p>
+                    
+                    <div class="d-inline-block">
+                        <% if (user.status === 'active') { %>
+                            <span class="badge bg-success badge-custom">
+                                <i class="fas fa-check-circle me-1"></i>Đang hoạt động
+                            </span>
+                        <% } else { %>
+                            <span class="badge bg-danger badge-custom">
+                                <i class="fas fa-ban me-1"></i>Bị khóa
+                            </span>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-section">
+                            <h5 class="mb-3"><i class="fas fa-id-card me-2"></i>Thông tin cơ bản</h5>
+                            
+                            <div class="info-item">
+                                <span class="info-label">Vai trò:</span>
+                                <span class="float-end fw-bold"><%= user.role_id?.name || 'Người dùng' %></span>
+                            </div>
+                            
+                            <div class="info-item">
+                                <span class="info-label">Ngày tham gia:</span>
+                                <span class="float-end">01/01/2023</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="info-section">
+                            <h5 class="mb-3"><i class="fas fa-address-book me-2"></i>Thông tin liên hệ</h5>
+                            
+                            <div class="info-item">
+                                <span class="info-label">Số điện thoại:</span>
+                                <span class="float-end"><%= user.phone || 'Chưa cập nhật' %></span>
+                            </div>
+                            
+                            <div class="info-item">
+                                <span class="info-label">Địa chỉ:</span>
+                                <span class="float-end"><%= user.address || 'Chưa cập nhật' %></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn btn-edit" onclick="window.location.href='settings'">
+                        <i class="fas fa-user-edit me-2"></i>Chỉnh sửa hồ sơ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

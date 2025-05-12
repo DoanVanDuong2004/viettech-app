@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài Đặt Tài Khoản</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #28a745;
+            --primary-dark: #218838;
+            --light-bg: #f8f9fa;
+            --border-radius: 10px;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .settings-container {
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        .settings-card {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .settings-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 20px;
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .settings-content {
+            padding: 30px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .avatar-upload {
+            position: relative;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            border-radius: 50%;
+            border: 5px solid var(--light-bg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-edit {
+            position: relative;
+            margin-top: 15px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+
+        .input-group-text {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .form-section {
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .btn-save {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 30px;
+            padding: 10px 30px;
+            border: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .password-strength {
+            height: 5px;
+            margin-top: 5px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+        }
+
+        .password-strength div {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        .form-floating label {
+            color: #6c757d;
+        }
+
+        .form-floating>.form-control:focus~label {
+            color: var(--primary-color);
+        }
+
+        .password-toggle {
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-cancel {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            border-radius: 30px;
+            padding: 10px 25px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="settings-container">
+        <form id="settings-form" enctype="multipart/form-data" class="settings-card">
+
+            <div class="settings-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="fas fa-cog me-2"></i>Cài Đặt Tài Khoản</h3>
+                    <a href="profile" class="btn btn-sm btn-outline-light rounded-pill">
+                        <i class="fas fa-user me-1"></i> Xem hồ sơ
+                    </a>
+                </div>
+            </div>
+
+            <div class="settings-content">
+                <!-- Thông tin cá nhân -->
+                <div class="form-section">
+                    <h5 class="section-title"><i class="fas fa-user-edit me-2"></i>Thông Tin Cá Nhân</h5>
+
+                    <!-- Avatar -->
+                    <div class="avatar-upload">
+                        <div class="avatar-preview">
+                            <img src="<%= user.profile_image?.url || '/uploads/default-avatar.png' %>" alt="Avatar" />
+                        </div>
+                        <div class="avatar-edit">
+                            <div class="input-group mb-3 w-75 mx-auto">
+                                <input type="file" name="profile_image" class="form-control" id="inputGroupFile02">
+                                <label class="input-group-text" for="inputGroupFile02">Tải lên</label>
+                            </div>
+                            <small class="text-muted">Cho phép JPG, PNG. Tối đa 2MB</small>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="full_name" name="full_name"
+                                    placeholder="Họ và tên" value="<%= user.full_name %>" required>
+                                <label for="full_name"><i class="fas fa-user me-2"></i>Họ và tên</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="phone" name="phone"
+                                    placeholder="Số điện thoại" value="<%= user.phone %>" required>
+                                <label for="phone"><i class="fas fa-phone me-2"></i>Số điện thoại</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                                    value="<%= user.email %>" disabled>
+                                <label for="email"><i class="fas fa-envelope me-2"></i>Email</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="address" name="address"
+                                    placeholder="Địa chỉ" value="<%= user.address %>" required>
+                                <label for="address"><i class="fas fa-map-marker-alt me-2"></i>Địa chỉ</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thay đổi mật khẩu -->
+                <div class="form-section">
+                    <h5 class="section-title"><i class="fas fa-lock me-2"></i>Thay Đổi Mật Khẩu</h5>
+
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            <input type="password" class="form-control" id="current_password" name="current_password"
+                                placeholder="Mật khẩu hiện tại">
+                            <span class="input-group-text password-toggle" onclick="togglePassword('current_password')">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" id="new_password" name="new_password"
+                                placeholder="Mật khẩu mới">
+                            <span class="input-group-text password-toggle" onclick="togglePassword('new_password')">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        <div class="password-strength mt-2">
+                            <div id="password-strength-meter" style="width: 0%; background-color: #dc3545;"></div>
+                        </div>
+                        <small class="form-text text-muted">
+                            Mật khẩu nên bao gồm ít nhất 8 ký tự, kết hợp chữ hoa, chữ thường và số
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-check-double"></i></span>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                                placeholder="Nhập lại mật khẩu mới">
+                            <span class="input-group-text password-toggle" onclick="togglePassword('confirm_password')">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        <div id="password-match-feedback"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a href="dashboard" class="btn btn-cancel">
+                        <i class="fas fa-times me-2"></i>Hủy
+                    </a>
+                    <button type="submit" class="btn btn-save">
+                        <i class="fas fa-save me-2"></i>Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Password strength meter
+        document.getElementById('new_password').addEventListener('input', function () {
+            const password = this.value;
+            const meter = document.getElementById('password-strength-meter');
+
+            // Simple password strength calculation
+            let strength = 0;
+
+            if (password.length >= 8) {
+                strength += 25;
+            }
+
+            if (password.match(/[A-Z]/)) {
+                strength += 25;
+            }
+
+            if (password.match(/[0-9]/)) {
+                strength += 25;
+            }
+
+            if (password.match(/[^A-Za-z0-9]/)) {
+                strength += 25;
+            }
+
+            meter.style.width = strength + '%';
+
+            if (strength < 25) {
+                meter.style.backgroundColor = '#dc3545'; // Danger
+            } else if (strength < 50) {
+                meter.style.backgroundColor = '#ffc107'; // Warning
+            } else if (strength < 75) {
+                meter.style.backgroundColor = '#17a2b8'; // Info
+            } else {
+                meter.style.backgroundColor = '#28a745'; // Success
+            }
+        });
+
+        // Password match confirmation
+        document.getElementById('confirm_password').addEventListener('input', function () {
+            const password = document.getElementById('new_password').value;
+            const confirmPassword = this.value;
+            const feedback = document.getElementById('password-match-feedback');
+
+            if (confirmPassword === '') {
+                feedback.innerHTML = '';
+            } else if (password === confirmPassword) {
+                feedback.innerHTML = '<small class="text-success"><i class="fas fa-check me-1"></i>Mật khẩu khớp</small>';
+            } else {
+                feedback.innerHTML = '<small class="text-danger"><i class="fas fa-times me-1"></i>Mật khẩu không khớp</small>';
+            }
+        });
+
+        document.getElementById("settings-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const accountId = "<%= user._id %>";
+
+            try {
+                // ✅ Gửi cập nhật thông tin + ảnh avatar
+                const resInfo = await fetch(`/v1/api/admin/user/${accountId}`, {
+                    method: "PUT",
+                    body: formData // KHÔNG thêm headers Content-Type
+                });
+
+                const dataInfo = await resInfo.json();
+                if (!resInfo.ok) throw new Error(dataInfo.message || "Cập nhật thông tin thất bại");
+                console.log("✅ Cập nhật thông tin:", dataInfo);
+
+                // ✅ Nếu có thay đổi mật khẩu
+                const oldPass = form.current_password.value;
+                const newPass = form.new_password.value;
+                const confirmPass = form.confirm_password.value;
+
+                if (oldPass && newPass && newPass === confirmPass) {
+                    const resPwd = await fetch("/v1/api/account/change-password", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            authorization: localStorage.getItem("accessToken")
+                        },
+                        body: JSON.stringify({
+                            accountId,
+                            oldPassword: oldPass,
+                            newPassword: newPass,
+                        })
+                    });
+
+                    const pwdResult = await resPwd.json();
+                    if (!resPwd.ok) throw new Error(pwdResult.message || "Đổi mật khẩu thất bại");
+                    console.log("🔐 Mật khẩu đã đổi:", pwdResult);
+                }
+
+                alert("✅ Cập nhật thành công!");
+                location.href = "profile";
+
+            } catch (err) {
+                console.error("❌ Lỗi khi cập nhật:", err);
+                alert(err.message || "Đã có lỗi xảy ra, vui lòng thử lại!");
+            }
+        });
+
+        document.getElementById("inputGroupFile02").addEventListener("change", function (e) {
+            const file = e.target.files[0];
+            const previewImg = document.querySelector(".avatar-preview img");
+
+            if (file && file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    previewImg.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewImg.src = "/uploads/default-avatar.png"; // fallback ảnh mặc định
+            }
+        });
+
+    </script>
+</body>
+
+</html>

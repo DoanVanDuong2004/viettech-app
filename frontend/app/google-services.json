@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "296366738302",
+    "project_id": "viettech-7a899",
+    "storage_bucket": "viettech-7a899.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296366738302:android:bc061d17cc6f678bf0412f",
+        "android_client_info": {
+          "package_name": "com.datn.viettech_md_12"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1FS7GU1REj4tqs2T_4f9qQz-6sfAuajg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

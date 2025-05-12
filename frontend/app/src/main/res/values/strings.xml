@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">VietTech</string>
+    <string name="title_activity_cart_screen">CartScreen</string>
+    <string name="title_activity_sign_up_screen">SignUpScreen</string>
+    <string name="title_activity_sign_in_screen">SignInScreen</string>
+    <string name="title_activity_checkout_shipping_screen">CheckoutShippingScreen</string>
+    <string name="title_activity_checkout_items_screen">CheckoutItemsScreen</string>
+    <string name="personal_information">Thông tin cá nhân</string>
+    <string name="shipping_address">Địa chỉ giao hàng</string>
+    <string name="payment_method">Phương thức thanh toán</string>
+    <string name="order_history">Đơn hàng của bạn</string>
+    <string name="review">Đánh giá của bạn</string>
+    <string name="support_information">Hỗ trợ &amp; Thông tin</string>
+    <string name="privacy_policy">Chính sách bảo mật</string>
+    <string name="terms_conditions">Điều khoản &amp; Điều kiện</string>
+    <string name="faqs">FAQs</string>
+    <string name="account_mangager">Quản lý tài khoản</string>
+    <string name="change_password">Thay đổi mật khẩu</string>
+    <string name="dark_theme">Chủ đề tối</string>
+    <string name="title_activity_test_sign_up_api">TestSignUpApi</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="login_success">Đăng nhập thành công!</string>
+    <string name="logiin_failed">Sai tên đăng nhập hoặc mật khẩu.</string>
+    <string name="validate_login_password">Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.</string>
+    <string name="username_failed">Tên đăng nhập không hợp lệ.</string>
+    <string name="validate_pass">Mật khẩu phải có ít nhất 6 ký tự.</string>
+    <string name="validate_check_all">Vui lòng điền đầy đủ thông tin.</string>
+    <string name="validate_user_name_register">Tên đăng nhập không được chứa ký tự đặc biệt.</string>
+    <string name="register_success">Đăng ký thành công!</string>
+    <string name="invalid_full_name">Họ tên không hợp lệ (chỉ chứa chữ cái và khoảng trắng).</string>
+    <string name="invalid_phone_number">Số điện thoại không hợp lệ(bắt đầu bằng 0 và chỉ được nhập 10 số).</string>
+    <string name="invalid_email">Email không đúng định dạng.</string>
+    <string name="password_no_spaces">Mật khẩu không được chứa khoảng trắng.</string>
+    <string name="password_too_short">Mật khẩu phải có ít nhất 6 ký tự.</string>
+    <string name="password_requirements">Mật khẩu phải bao gồm cả chữ cái và số.</string>
+    <string name="order_infomation">Thông tin đơn hàng</string>
+
+    <string name="contact_us">Liên hệ</string>
+    <string name="viet_tech_post">Thông tin mới nhất</string>
+    <string name="title_activity_no_internet">NoInternetActivity</string>
+
+</resources>
